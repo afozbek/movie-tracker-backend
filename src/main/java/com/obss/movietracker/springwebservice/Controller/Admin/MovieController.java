@@ -28,7 +28,7 @@ public class MovieController {
 
     // POST MOVIE
     @PostMapping
-    public ResponseEntity<?> createMovie(@RequestBody MovieEntity movie) {
+    public ResponseEntity<Object> postMoviecreateMovie(@RequestBody MovieEntity movie) {
         String movieName = movie.getName();
         Genre genre = movie.getGenreType();
         Date releaseDate = movie.getReleaseDate();
@@ -61,14 +61,14 @@ public class MovieController {
 
     // GET MOVIE
     @GetMapping("/{movieId}")
-    public ResponseEntity<?> getMovie(@PathVariable Long movieId) {
+    public ResponseEntity<MovieEntity> getMovie(@PathVariable Long movieId) {
         MovieEntity movie = movieService.getMovieById(movieId);
         return new ResponseEntity<>(movie, HttpStatus.OK);
     }
 
     // UPDATE MOVIE
     @PutMapping("/{movieId}")
-    public ResponseEntity<?> updateMovie(@PathVariable Long movieId, @RequestBody MovieEntity movieObj) {
+    public ResponseEntity<Object> updateMovie(@PathVariable Long movieId, @RequestBody MovieEntity movieObj) {
         String movieName = movieObj.getName();
         Genre genre = movieObj.getGenreType();
         double rating = movieObj.getRating();
@@ -97,7 +97,6 @@ public class MovieController {
         movie.setDirector(newDirector);
         movie.setRating(rating);
 
-
         MovieEntity updatedMovie = movieService.updateMovie(movie);
 
         if (updatedMovie == null) {
@@ -109,7 +108,7 @@ public class MovieController {
 
     // DELETE MOVIE
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<InfoMessage> deleteMovie(@PathVariable Long id) {
         if (movieService.deleteMovie(id)) {
             return new ResponseEntity<>(new InfoMessage("Successfully deleted"), HttpStatus.OK);
         }
@@ -117,4 +116,3 @@ public class MovieController {
         return new ResponseEntity<>(new InfoMessage("Movie was not deleted"), HttpStatus.BAD_REQUEST);
     }
 }
-    

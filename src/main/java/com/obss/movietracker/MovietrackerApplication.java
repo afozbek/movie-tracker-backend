@@ -37,22 +37,17 @@ public class MovietrackerApplication implements CommandLineRunner {
 
         SpringApplication.run(MovietrackerApplication.class, args);
 
-
         System.out.println("Application is running correctly 😊");
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        userRepository.save(new UserEntity(
-                "afozbek",
-                "Furkan",
-                "Ozbek",
-                passwordService.hashPassword("test"),
-                new ArrayList<>(
-                        Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                                new SimpleGrantedAuthority("ROLE_USER"))
-                )));
+        // TODO: API DAN Movie leri veritabanı kaydet
+
+        userRepository.save(new UserEntity("afozbek", "Furkan", "Ozbek", passwordService.hashPassword("test"),
+                new ArrayList<>(Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"),
+                        new SimpleGrantedAuthority("ROLE_USER")))));
         DirectorEntity director = new DirectorEntity("Furkan", "ozbek", new Date(), "Usküdar");
         DirectorEntity director1 = new DirectorEntity("Sena", "Modanlıoglu", new Date(), "Gaziosmanpaşa");
         directorRepository.save(director);

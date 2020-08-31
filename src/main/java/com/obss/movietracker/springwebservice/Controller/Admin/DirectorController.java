@@ -72,7 +72,7 @@ public class DirectorController {
         String birthPlace = directorObj.getBirthPlace();
         Date birthDate = directorObj.getBirthDate();
 
-        if (directorName == null || surname == null || birthPlace == null || birthDate==null) {
+        if (directorName == null || surname == null || birthPlace == null || birthDate == null) {
             return new ResponseEntity<>(new InfoMessage("Please fill the form"), HttpStatus.BAD_REQUEST);
         }
 

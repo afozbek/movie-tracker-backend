@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.util.Collections;
 
-
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @Configuration
@@ -46,37 +45,19 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("user")
-                .password("password")
-                .roles("USER")
-                .and()
-                .withUser("admin")
-                .password("admin")
-                .roles("USER", "ADMIN");
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("user").password("password").roles("USER").and().withUser("admin")
+                .password("admin").roles("USER", "ADMIN");
     }
-
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors()
-                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**", "/auth/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(entryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/**", "/auth/**").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated().and().exceptionHandling()
+                .authenticationEntryPoint(entryPoint).and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.headers().cacheControl();

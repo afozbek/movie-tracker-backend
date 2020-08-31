@@ -26,15 +26,10 @@ public class IndexController {
     @Autowired
     private UserServiceImpl userService;
 
-    @GetMapping
-    public ResponseEntity<?> hello() {
-        return new ResponseEntity<>(new InfoMessage("Hello World"), HttpStatus.OK);
-    }
-
-    // GET MOVIE OR MOVIES
+    // TODO: We can call an api and retrieve the movies from there
     @GetMapping("/movies")
-    public ResponseEntity<?> getMovies(@RequestParam(required = false, name = "movie") String movieName,
-                                       @RequestParam(required = false, name = "genre") Genre genre) {
+    public ResponseEntity<Object> getMovies(@RequestParam(required = false, name = "movie") String movieName,
+            @RequestParam(required = false, name = "genre") Genre genre) {
         List<MovieEntity> movieList;
 
         if (movieName != null && genre != null) {
@@ -53,6 +48,7 @@ public class IndexController {
         } else {
             movieList = movieService.getMovies();
         }
+
         if (movieList == null) {
             return new ResponseEntity<>(new InfoMessage("Can not retrieve movieList"), HttpStatus.BAD_REQUEST);
         }
