@@ -3,6 +3,9 @@ package com.obss.movietracker.springwebservice.Model;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +26,7 @@ public class UserEntity {
     private String lastName;
 
     @Column
+    @JsonIgnore
     private String password;
 
     @Column
