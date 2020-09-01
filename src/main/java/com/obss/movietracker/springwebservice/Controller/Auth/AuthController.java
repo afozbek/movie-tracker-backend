@@ -1,5 +1,8 @@
 package com.obss.movietracker.springwebservice.Controller.Auth;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.obss.movietracker.springwebservice.Exceptions.PasswordWrongException;
 import com.obss.movietracker.springwebservice.Messages.InfoMessage;
 import com.obss.movietracker.springwebservice.Model.Form.PasswordChangeForm;
@@ -32,7 +35,7 @@ public class AuthController {
 
     // LOGIN USER ✔
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody JwtUser jwtUser) {
+    public ResponseEntity<Object> login(@RequestBody JwtUser jwtUser) {
 
         if (jwtUser.getUsername() == null || jwtUser.getPassword() == null) {
             return new ResponseEntity<>(new InfoMessage("Please fill the form"), HttpStatus.BAD_REQUEST);
@@ -51,10 +54,12 @@ public class AuthController {
 
         String token = jwtTokenUtilService.generateToken(jwtUserDetails);
 
-        // new JwtAuthenticationToken(token, jwtUserDetails.getAuthorities())
+        Map<String, Object> newObject = new HashMap<>();
+        newObject.put("user",
+                new JwtAuthenticationToken(token, jwtUserDetails.getAuthorities(), jwtUserDetails.getUserName()));
+        newObject.put("fullName", jwtUserDetails.getFullName());
 
-        return ResponseEntity
-                .ok(new JwtAuthenticationToken(token, jwtUserDetails.getAuthorities(), jwtUserDetails.getUserName()));
+        return ResponseEntity.ok(newObject);
     }
 
     // CREATE USER ✔
