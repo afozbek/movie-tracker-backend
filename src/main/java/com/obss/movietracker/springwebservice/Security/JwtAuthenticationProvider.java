@@ -1,6 +1,5 @@
 package com.obss.movietracker.springwebservice.Security;
 
-
 import com.obss.movietracker.springwebservice.Model.Jwt.JwtAuthenticationToken;
 import com.obss.movietracker.springwebservice.Model.Jwt.JwtUser;
 import com.obss.movietracker.springwebservice.Model.Jwt.JwtUserDetails;
@@ -22,12 +21,14 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
     private JwtTokenUtilService jwtTokenUtilService;
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
-
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+        //doldurulacak
     }
 
     @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+    protected UserDetails retrieveUser(String username,
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
 
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) usernamePasswordAuthenticationToken;
 
@@ -35,8 +36,10 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
 
         JwtUser jwtUser = jwtTokenUtilService.getJwtUserWithToken(token);
 
+        // TODO: JWT USER AUTHENTICATION
         if (jwtUser == null) {
-            throw new RuntimeException("JWT TOKEN is incorrect");
+            return null;
+            // throw new RuntimeException("JWT TOKEN is incorrect");
         }
 
         List<SimpleGrantedAuthority> grantedAuthorities = jwtUser.getAuthorities();
