@@ -4,15 +4,20 @@ import com.obss.movietracker.springwebservice.Messages.InfoMessage;
 import com.obss.movietracker.springwebservice.Model.MovieEntity;
 import com.obss.movietracker.springwebservice.Model.Types.Genre;
 import com.obss.movietracker.springwebservice.Model.UserEntity;
+import com.obss.movietracker.springwebservice.Model.Jwt.JwtUser;
 import com.obss.movietracker.springwebservice.Service.Impl.MovieServiceImpl;
 import com.obss.movietracker.springwebservice.Service.Impl.UserServiceImpl;
+import com.obss.movietracker.springwebservice.Service.Jwt.JwtTokenUtilService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
@@ -25,6 +30,27 @@ public class IndexController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private JwtTokenUtilService jwtTokenUtilService;
+
+    @GetMapping("/checkUserAuthentication")
+    public ResponseEntity<Object> checkUserAuthentication(
+            @RequestParam(required = true, name = "jwtToken") String jwtToken) {
+        JwtUser jwtUser = jwtTokenUtilService.getJwtUserWithToken(jwtToken);
+
+        Map<String, Object> userData = new HashMap<>();
+        // TODO: JWT USER AUTHENTICATION
+        if (jwtUser == null) {
+            return new ResponseEntity<>(new InfoMessage("User is not authenticated"), HttpStatus.BAD_REQUEST);
+        } else {
+            UserEntity user = userService.getUserByUsername(jwtUser.getUsername());
+            userData.put("authenticated", true);
+            userData.put("user", user);
+
+            return new ResponseEntity<>(userData, HttpStatus.OK);
+        }
+    }
 
     // TODO: We can call an api and retrieve the movies from there
     @GetMapping("/movies")
@@ -56,7 +82,7 @@ public class IndexController {
     }
 
     @GetMapping("/{username}/favList")
-    public ResponseEntity<?> getFavList(@PathVariable String username) {
+    public ResponseEntity<Object> getFavList(@PathVariable String username) {
         UserEntity user = userService.getUserByUsername(username);
 
         Set<MovieEntity> favLists = user.getFavList();
@@ -65,7 +91,7 @@ public class IndexController {
     }
 
     @DeleteMapping("/{username}/favList/{movieId}")
-    public ResponseEntity<?> deleteFromFavList(@PathVariable String username, @PathVariable Long movieId) {
+    public ResponseEntity<Object> deleteFromFavList(@PathVariable String username, @PathVariable Long movieId) {
         UserEntity user = userService.getUserByUsername(username);
 
         Set<MovieEntity> favLists = user.getFavList();
@@ -87,7 +113,7 @@ public class IndexController {
     }
 
     @PostMapping("/{userId}/favList/{movieId}")
-    public ResponseEntity<?> addToFavList(@PathVariable Long userId, @PathVariable Long movieId) {
+    public ResponseEntity<Object> addToFavList(@PathVariable Long userId, @PathVariable Long movieId) {
         Set<MovieEntity> favList = userService.addMovieToFavList(userId, movieId);
 
         if (favList == null) {
@@ -98,7 +124,7 @@ public class IndexController {
     }
 
     @GetMapping("/{username}/watchList")
-    public ResponseEntity<?> getWatchList(@PathVariable String username) {
+    public ResponseEntity<Object> getWatchList(@PathVariable String username) {
         UserEntity user = userService.getUserByUsername(username);
 
         Set<MovieEntity> watchList = user.getWatchList();
@@ -107,7 +133,7 @@ public class IndexController {
     }
 
     @DeleteMapping("/{username}/watchList/{movieId}")
-    public ResponseEntity<?> deleteFromWatchList(@PathVariable String username, @PathVariable Long movieId) {
+    public ResponseEntity<Object> deleteFromWatchList(@PathVariable String username, @PathVariable Long movieId) {
         UserEntity user = userService.getUserByUsername(username);
 
         Set<MovieEntity> watchList = user.getWatchList();
@@ -129,7 +155,7 @@ public class IndexController {
     }
 
     @PostMapping("/{userId}/watchList/{movieId}")
-    public ResponseEntity<?> addToWatchList(@PathVariable Long userId, @PathVariable Long movieId) {
+    public ResponseEntity<Object> addToWatchList(@PathVariable Long userId, @PathVariable Long movieId) {
         Set<MovieEntity> wathcList = userService.addMovieToWatchList(userId, movieId);
 
         if (wathcList == null) {
