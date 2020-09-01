@@ -17,6 +17,8 @@ public class JwtUserDetails implements UserDetails {
 
     private String password;
 
+    private String fullName;
+
     private String token;
 
     private Collection<? extends GrantedAuthority> authorities;
@@ -53,6 +55,15 @@ public class JwtUserDetails implements UserDetails {
     public JwtUserDetails(Long id, String username, String password, List<SimpleGrantedAuthority> authorities) {
         this.id = id;
         this.userName = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+    public JwtUserDetails(Long id, String username, String password, String fullName,
+            List<SimpleGrantedAuthority> authorities) {
+        this.id = id;
+        this.userName = username;
+        this.fullName = fullName;
         this.password = password;
         this.authorities = authorities;
     }
@@ -102,6 +113,14 @@ public class JwtUserDetails implements UserDetails {
 
     public Long getId() {
         return id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
 }
