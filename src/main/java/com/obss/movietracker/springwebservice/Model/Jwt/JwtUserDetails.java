@@ -103,10 +103,6 @@ public class JwtUserDetails implements UserDetails {
         return true;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public String getToken() {
         return token;
     }

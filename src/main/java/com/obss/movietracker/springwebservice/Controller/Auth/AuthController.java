@@ -56,7 +56,7 @@ public class AuthController {
 
         Map<String, Object> newObject = new HashMap<>();
         newObject.put("user",
-                new JwtAuthenticationToken(token, jwtUserDetails.getAuthorities(), jwtUserDetails.getUserName()));
+                new JwtAuthenticationToken(token, jwtUserDetails.getAuthorities(), jwtUserDetails.getUsername()));
         newObject.put("fullName", jwtUserDetails.getFullName());
 
         return ResponseEntity.ok(newObject);
@@ -64,7 +64,7 @@ public class AuthController {
 
     // CREATE USER ✔
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody JwtUser jwtUser) {
+    public ResponseEntity<Object> createUser(@RequestBody JwtUser jwtUser) {
         if (jwtUser.getUsername() == null || jwtUser.getPassword() == null) {
             return new ResponseEntity<>(new InfoMessage("Please enter your username and password"),
                     HttpStatus.BAD_REQUEST);
@@ -81,7 +81,7 @@ public class AuthController {
 
     // UPDATING PASSWORD ✔
     @PutMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeForm passwordChangeForm) {
+    public ResponseEntity<Object> changePassword(@RequestBody PasswordChangeForm passwordChangeForm) {
         String username = passwordChangeForm.getUsername();
         String password = passwordChangeForm.getPassword();
 

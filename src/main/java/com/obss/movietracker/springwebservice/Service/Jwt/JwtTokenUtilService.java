@@ -54,25 +54,21 @@ public class JwtTokenUtilService {
     }
 
     public String generateToken(JwtUserDetails jwtUserDetails) {
-        String userName = jwtUserDetails.getUserName();
+        String userName = jwtUserDetails.getUsername();
 
         Claims claims = Jwts.claims().setSubject(userName);
 
         claims.put("userId", jwtUserDetails.getId());
-        claims.put("authorities", jwtUserDetails.getAuthorities().stream()
-                .map(s -> s.toString())
-                .collect(Collectors.toList()));
+        claims.put("authorities",
+                jwtUserDetails.getAuthorities().stream().map(s -> s.toString()).collect(Collectors.toList()));
 
         return doGenerateToken(claims);
     }
 
     private String doGenerateToken(Claims claims) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     public Boolean canTokenBeRefreshed(String token) {
@@ -82,24 +78,20 @@ public class JwtTokenUtilService {
     public Boolean validateToken(String token, JwtUserDetails jwtUserDetails) {
         final String username = getUserNameFromToken(token);
 
-        return (username.equals(jwtUserDetails.getUserName()) && !isTokenExpired(token));
+        return (username.equals(jwtUserDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public JwtUser getJwtUserWithToken(String token) {
         JwtUser jwtUser = null;
 
         try {
-            Claims body = Jwts
-                    .parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getBody();
+            Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 
             jwtUser = new JwtUser();
 
-            @SuppressWarnings("unchecked") final List<String> authorities = (List<String>) body.get("authorities", List.class);
-            final List<SimpleGrantedAuthority> auths = authorities.stream()
-                    .map(SimpleGrantedAuthority::new)
+            @SuppressWarnings("unchecked")
+            final List<String> authorities = (List<String>) body.get("authorities", List.class);
+            final List<SimpleGrantedAuthority> auths = authorities.stream().map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
             jwtUser.setId(body.get("userId", Long.class));
