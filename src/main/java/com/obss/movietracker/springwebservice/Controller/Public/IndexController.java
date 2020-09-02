@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RestController
@@ -35,15 +36,17 @@ public class IndexController {
     private JwtTokenUtilService jwtTokenUtilService;
 
     @GetMapping("/checkUserAuthentication")
-    public ResponseEntity<Object> checkUserAuthentication(
-            @RequestParam(required = true, name = "jwtToken") String jwtToken) {
-        JwtUser jwtUser = jwtTokenUtilService.getJwtUserWithToken(jwtToken);
+    public ResponseEntity<Object> checkUserAuthentication(@RequestHeader("Authorization") String authorization) {
+        JwtUser jwtUser = jwtTokenUtilService.getJwtUserWithToken(authorization);
+        Logger.getGlobal().info(authorization);
 
-        Map<String, Object> userData = new HashMap<>();
-        // TODO: JWT USER AUTHENTICATION
+        Map<String, Object> userData;
+
         if (jwtUser == null) {
-            return new ResponseEntity<>(new InfoMessage("User is not authenticated"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new InfoMessage("User is not authenticated"), HttpStatus.FORBIDDEN);
         } else {
+            userData = new HashMap<>();
+
             UserEntity user = userService.getUserByUsername(jwtUser.getUsername());
             userData.put("authenticated", true);
             userData.put("user", user);
