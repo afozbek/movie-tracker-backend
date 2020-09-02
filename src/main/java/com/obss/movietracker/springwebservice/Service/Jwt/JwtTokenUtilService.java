@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class JwtTokenUtilService {
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
+    // Token Valid Time: 60 minutes
+    public static final long JWT_TOKEN_VALIDITY = 60 * 60 * 1000;
 
     @Value("${jwt.secret}")
     private String secret;
