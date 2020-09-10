@@ -8,6 +8,7 @@ import com.obss.movietracker.springwebservice.Model.Jwt.JwtUserDetails;
 import com.obss.movietracker.springwebservice.Model.MovieEntity;
 import com.obss.movietracker.springwebservice.Model.UserEntity;
 import com.obss.movietracker.springwebservice.Service.Impl.Util.PasswordServiceImpl;
+import com.obss.movietracker.springwebservice.Service.Jwt.JwtTokenUtilService;
 import com.obss.movietracker.springwebservice.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +30,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private JwtTokenUtilService jwtTokenUtilService;
+
+    @Override
+    public String generateJWTToken(String username, String password) {
+        JwtUserDetails jwtUserDetails;
+
+        try {
+            jwtUserDetails = (JwtUserDetails) loadUserByUsernameAndPassword(username, password);
+            return jwtTokenUtilService.generateToken(jwtUserDetails);
+
+        } catch (PasswordWrongException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

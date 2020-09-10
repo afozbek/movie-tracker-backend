@@ -52,7 +52,7 @@ public class AuthController {
             return new ResponseEntity<>(new InfoMessage("Username or password wrong"), HttpStatus.BAD_REQUEST);
         }
 
-        String token = jwtTokenUtilService.generateToken(jwtUserDetails);
+        String token = userService.generateJWTToken(jwtUser.getUsername(), jwtUser.getPassword());
 
         Map<String, Object> newObject = new HashMap<>();
         newObject.put("user",
@@ -76,7 +76,24 @@ public class AuthController {
             return new ResponseEntity<>(new InfoMessage("User Creation failed"), HttpStatus.EXPECTATION_FAILED);
         }
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        String token;
+        Map<String, Object> registerUserData = new HashMap<>();
+        try {
+            token = userService.generateJWTToken(jwtUser.getUsername(), jwtUser.getPassword());
+
+            if (token != null) {
+                registerUserData.put("authenticated", true);
+                registerUserData.put("token", token);
+                registerUserData.put("user", user);
+
+                return new ResponseEntity<>(registerUserData, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(new InfoMessage("Token creation failed"), HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(new InfoMessage(e.getMessage()), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
     // UPDATING PASSWORD ✔

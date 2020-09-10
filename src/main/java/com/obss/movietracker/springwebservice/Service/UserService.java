@@ -1,6 +1,5 @@
 package com.obss.movietracker.springwebservice.Service;
 
-
 import com.obss.movietracker.springwebservice.Model.Jwt.JwtUser;
 import com.obss.movietracker.springwebservice.Model.UserEntity;
 
@@ -25,4 +24,6 @@ public interface UserService {
     UserEntity findUserByUsernameAndPassword(String username, String password);
 
     boolean registerUser(UserEntity userEntity);
+
+    String generateJWTToken(String username, String password);
 }
