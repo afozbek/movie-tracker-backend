@@ -65,8 +65,17 @@ public class AuthController {
     // CREATE USER ✔
     @PostMapping("/register")
     public ResponseEntity<Object> createUser(@RequestBody JwtUser jwtUser) {
-        if (jwtUser.getUsername() == null || jwtUser.getPassword() == null) {
+        String username = jwtUser.getUsername().trim();
+        String password = jwtUser.getPassword().trim();
+
+        if (username == null || password == null) {
             return new ResponseEntity<>(new InfoMessage("Please enter your username and password"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (username.length() < 5 || password.length() < 5) {
+            return new ResponseEntity<>(
+                    new InfoMessage("You must enter at least 5 characters to both your username and password"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -79,7 +88,7 @@ public class AuthController {
         String token;
         Map<String, Object> registerUserData = new HashMap<>();
         try {
-            token = userService.generateJWTToken(jwtUser.getUsername(), jwtUser.getPassword());
+            token = userService.generateJWTToken(username, password);
 
             if (token != null) {
                 registerUserData.put("authenticated", true);
